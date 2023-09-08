@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.github.DamaluMalisa</groupId>
             <artifactId>zahara-learning-management-system-shared-library</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>0a2ce55f5c</version>
         </dependency>
 
         <dependency>
@@ -87,7 +87,7 @@
         <repository>
             <id>central</id>
             <name>Central Repository</name>
-            <url>http://repo.maven.apache.org/maven2</url>
+            <url>https://repo.maven.apache.org/maven2</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>

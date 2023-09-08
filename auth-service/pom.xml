@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.github.DamaluMalisa</groupId>
             <artifactId>zahara-learning-management-system-shared-library</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>0a2ce55f5c</version>
         </dependency>
 
 
@@ -64,6 +64,14 @@
             <artifactId>spring-cloud-starter-config</artifactId>
             <version>${spring.cloud-dependency-version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>mysql</groupId>

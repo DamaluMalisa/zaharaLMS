@@ -9,8 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
-public abstract class ExamRealizationMapper
-        implements BaseMapper<ExamRealization, ExamRealizationDTO, Long> {
+public abstract class ExamRealizationMapper implements BaseMapper<ExamRealization, ExamRealizationDTO, Long> {
     @Mapping(source = "subjectEnrollmentId", target = "subjectEnrollment")
     @Mapping(source = "examRealization", target = "passed", qualifiedByName = "hasPassed")
     public abstract ExamRealizationDTO toDTO(ExamRealization examRealization);

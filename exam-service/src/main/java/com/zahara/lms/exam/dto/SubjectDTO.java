@@ -14,7 +14,7 @@ public class SubjectDTO extends BaseDTO<Long> {
     private String name;
     private String syllabus;
     private Integer semester;
-    private Integer ects;
+    private Integer subjects;
     private TeacherDTO professor;
     private TeacherDTO assistant;
 }

@@ -10,6 +10,7 @@ import com.zahara.lms.shared.dto.UserDetailsDTO;
 import com.zahara.lms.shared.exception.ForbiddenException;
 import com.zahara.lms.shared.exception.NotFoundException;
 import com.zahara.lms.shared.service.BaseService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -100,7 +101,7 @@ public class UserService extends BaseService<User, UserDetailsDTO, Long> {
                 .getId();
     }
 
-    public TokensDTO login(UserDTO userDTO) {
+    public TokensDTO login(@NotNull UserDTO userDTO) {
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(
                         userDTO.getUsername(), userDTO.getPassword());

@@ -10,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients({"ca.utoronto.lms.exam", "ca.utoronto.lms.shared"})
-@ComponentScan({"ca.utoronto.lms.exam", "ca.utoronto.lms.shared"})
+@EnableFeignClients({"com.zahara.lms.exam", "com.zahara.lms.shared"})
+@ComponentScan({"com.zahara.lms.exam", "com.zahara.lms.shared"})
 @OpenAPIDefinition(
         info =
                 @Info(
