@@ -31,6 +31,7 @@ public class SubjectService extends ExtendedService<Subject, SubjectDTO, Long> {
         this.facultyFeignClient = facultyFeignClient;
     }
 
+    @Override
     protected List<SubjectDTO> mapMissingValues(List<SubjectDTO> subjects) {
         map(
                 subjects,

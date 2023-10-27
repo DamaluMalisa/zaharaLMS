@@ -187,6 +187,30 @@ public class SubjectEnrollmentService
                 .toList();
     }
 
+    public List<Integer> findTotalECTSByStudentId(List<Long> ids) {
+        if (hasAuthority(ROLE_STUDENT) && (ids.size() > 1 || !ids.contains(getStudentId()))) {
+            throw new ForbiddenException("You are not allowed to view total ECTS for this student");
+        }
+
+        List<Integer> totalECTs = new ArrayList<>(ids.size());
+        ids.forEach(
+                id -> {
+                    List<SubjectEnrollment> subjectEnrollments =
+                            repository.findByStudentIdAndDeletedFalse(id).stream()
+                                    .filter(
+                                            subjectEnrollment ->
+                                                    subjectEnrollment.getGrade() != null)
+                                    .toList();
+
+                    totalECTs.add(
+                            subjectEnrollments.stream()
+                                    .map(SubjectEnrollment::getSubject)
+                                    .map(Subject::getEcts)
+                                    .reduce(0, Integer::sum));
+                });
+        return totalECTs;
+    }
+
     public List<Double> findAverageGradeByStudentId(List<Long> ids) {
         if (hasAuthority(ROLE_STUDENT) && (ids.size() > 1 || !ids.contains(getStudentId()))) {
             throw new ForbiddenException(
@@ -216,30 +240,6 @@ public class SubjectEnrollmentService
                                                     / subjectEnrollments.size()));
                 });
         return averageGrades;
-    }
-
-    public List<Integer> findTotalECTSByStudentId(List<Long> ids) {
-        if (hasAuthority(ROLE_STUDENT) && (ids.size() > 1 || !ids.contains(getStudentId()))) {
-            throw new ForbiddenException("You are not allowed to view total SUBJECTS for this student");
-        }
-
-        List<Integer> totalSubjects = new ArrayList<>(ids.size());
-        ids.forEach(
-                id -> {
-                    List<SubjectEnrollment> subjectEnrollments =
-                            repository.findByStudentIdAndDeletedFalse(id).stream()
-                                    .filter(
-                                            subjectEnrollment ->
-                                                    subjectEnrollment.getGrade() != null)
-                                    .toList();
-
-                    totalSubjects.add(
-                            subjectEnrollments.stream()
-                                    .map(SubjectEnrollment::getSubject)
-                                    .map(Subject::getSubjects)
-                                    .reduce(0, Integer::sum));
-                });
-        return totalSubjects;
     }
 
     @Transactional

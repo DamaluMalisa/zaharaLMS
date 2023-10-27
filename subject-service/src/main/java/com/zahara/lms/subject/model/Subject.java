@@ -30,7 +30,7 @@ public class Subject extends BaseEntity<Long> {
     private Integer semester;
 
     @Column(nullable = false)
-    private Integer subjects;
+    private Integer ects;
 
     @Column(nullable = false)
     private Long studyProgramId;

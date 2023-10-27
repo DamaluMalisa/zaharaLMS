@@ -76,9 +76,14 @@ public class ExamService extends ExtendedService<Exam, ExamDTO, Long> {
         super.delete(id);
     }
 
+
     @Override
     protected List<ExamDTO> mapMissingValues(List<ExamDTO> exams) {
-        map(exams, ExamDTO::getSubject, ExamDTO::setSubject, subjectFeignClient::getSubject);
+        map(
+                exams,
+                ExamDTO::getSubject,
+                ExamDTO::setSubject,
+                subjectFeignClient::getSubject);
         return exams;
     }
 

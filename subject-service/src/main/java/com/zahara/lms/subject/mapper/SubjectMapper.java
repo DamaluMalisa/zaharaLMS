@@ -24,3 +24,4 @@ public interface SubjectMapper extends BaseMapper<Subject, SubjectDTO, Long> {
 
     TeacherDTO teacherFromId(Long id);
 }
+

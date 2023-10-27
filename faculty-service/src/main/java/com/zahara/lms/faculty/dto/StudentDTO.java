@@ -34,7 +34,6 @@ public class StudentDTO extends BaseDTO<Long> {
 
     private ThesisDTO thesis;
 
-    @NotNull(message = "Study program is mandatory")
     private StudyProgramDTO studyProgram;
 
     private Double averageGrade;
