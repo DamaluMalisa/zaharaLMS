@@ -57,7 +57,7 @@ public class SubjectEnrollmentService
                                             !subjectEnrollment.getStudentId().equals(studentId));
             if (forbidden) {
                 throw new ForbiddenException(
-                        "You are not allowed to view these subject enrollments");
+                        "You are not allowed to view these subject enrollments a");
             }
         }
 
@@ -74,7 +74,7 @@ public class SubjectEnrollmentService
                                                     && !subject.getAssistantId().equals(teacherId));
             if (forbidden) {
                 throw new ForbiddenException(
-                        "You are not allowed to view these subject enrollments");
+                        "You are not allowed to view these subject enrollments b");
             }
         }
 
@@ -110,7 +110,7 @@ public class SubjectEnrollmentService
 
     public List<SubjectEnrollmentDTO> findByStudentId(Long id) {
         if (hasAuthority(ROLE_STUDENT) && !id.equals(getStudentId())) {
-            throw new ForbiddenException("You are not allowed to view these subject enrollments");
+            throw new ForbiddenException("You are not allowed to view these subject enrollments c");
         }
 
         List<SubjectEnrollmentDTO> subjectEnrollments =
@@ -132,7 +132,7 @@ public class SubjectEnrollmentService
             if (!subject.getProfessor().getId().equals(teacherId)
                     && !subject.getAssistant().getId().equals(teacherId)) {
                 throw new ForbiddenException(
-                        "You are not allowed to view these subject enrollments");
+                        "You are not allowed to view these subject enrollments d");
             }
         }
 
@@ -151,7 +151,7 @@ public class SubjectEnrollmentService
 
     public Page<SubjectEnrollmentDTO> findByStudentId(Long id, Pageable pageable, String search) {
         if (hasAuthority(ROLE_STUDENT) && !id.equals(getStudentId())) {
-            throw new ForbiddenException("You are not allowed to view this subject enrollments");
+            throw new ForbiddenException("You are not allowed to view this subject enrollments e");
         }
 
         Page<SubjectEnrollmentDTO> subjectEnrollments =
@@ -187,6 +187,30 @@ public class SubjectEnrollmentService
                 .toList();
     }
 
+    public List<Integer> findTotalECTSByStudentId(List<Long> ids) {
+        if (hasAuthority(ROLE_STUDENT) && (ids.size() > 1 || !ids.contains(getStudentId()))) {
+            throw new ForbiddenException("You are not allowed to view total ECTS for this student");
+        }
+
+        List<Integer> totalECTs = new ArrayList<>(ids.size());
+        ids.forEach(
+                id -> {
+                    List<SubjectEnrollment> subjectEnrollments =
+                            repository.findByStudentIdAndDeletedFalse(id).stream()
+                                    .filter(
+                                            subjectEnrollment ->
+                                                    subjectEnrollment.getGrade() != null)
+                                    .toList();
+
+                    totalECTs.add(
+                            subjectEnrollments.stream()
+                                    .map(SubjectEnrollment::getSubject)
+                                    .map(Subject::getEcts)
+                                    .reduce(0, Integer::sum));
+                });
+        return totalECTs;
+    }
+
     public List<Double> findAverageGradeByStudentId(List<Long> ids) {
         if (hasAuthority(ROLE_STUDENT) && (ids.size() > 1 || !ids.contains(getStudentId()))) {
             throw new ForbiddenException(
@@ -216,30 +240,6 @@ public class SubjectEnrollmentService
                                                     / subjectEnrollments.size()));
                 });
         return averageGrades;
-    }
-
-    public List<Integer> findTotalECTSByStudentId(List<Long> ids) {
-        if (hasAuthority(ROLE_STUDENT) && (ids.size() > 1 || !ids.contains(getStudentId()))) {
-            throw new ForbiddenException("You are not allowed to view total SUBJECTS for this student");
-        }
-
-        List<Integer> totalSubjects = new ArrayList<>(ids.size());
-        ids.forEach(
-                id -> {
-                    List<SubjectEnrollment> subjectEnrollments =
-                            repository.findByStudentIdAndDeletedFalse(id).stream()
-                                    .filter(
-                                            subjectEnrollment ->
-                                                    subjectEnrollment.getGrade() != null)
-                                    .toList();
-
-                    totalSubjects.add(
-                            subjectEnrollments.stream()
-                                    .map(SubjectEnrollment::getSubject)
-                                    .map(Subject::getSubjects)
-                                    .reduce(0, Integer::sum));
-                });
-        return totalSubjects;
     }
 
     @Transactional

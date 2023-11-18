@@ -32,6 +32,9 @@ public class StudyProgram extends BaseEntity<Long> {
     @ManyToOne(optional = false)
     private Teacher manager;
 
+    @ManyToOne
+    private EducationLevel educationLevel;
+
     @OneToMany(mappedBy = "studyProgram")
     private Set<Student> students = new HashSet<>();
 }

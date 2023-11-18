@@ -17,7 +17,7 @@ public class StudentsOnSubjectPDFExporter extends PDFExporter<StudentDTO, Long> 
                     "Username",
                     "First name",
                     "Last name",
-                    "Index",
+                    "Registration number",
                     "Enrollment",
                     "Grade",
                     "ECTS",
@@ -29,7 +29,8 @@ public class StudentsOnSubjectPDFExporter extends PDFExporter<StudentDTO, Long> 
                                 student -> student.getUser().getUsername(),
                                 StudentDTO::getFirstName,
                                 StudentDTO::getLastName,
-                                StudentDTO::getIndex,
+                                StudentDTO::getGender,
+                                StudentDTO::getRegistrationNumber,
                                 student -> String.valueOf(student.getYearOfEnrollment()),
                                 student -> String.valueOf(student.getAverageGrade()),
                                 student -> String.valueOf(student.getTotalECTS()))));

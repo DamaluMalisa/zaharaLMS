@@ -40,6 +40,12 @@ spring:
             - Path=/api/exam-service/**
           filters:
             - RewritePath=/api/exam-service/(?<path>.*), /$\{path}
+        - id: assessment-service
+          uri: lb://ASSESSMENT-SERVICE
+          predicates:
+            - Path=/api/assessment-service/**
+          filters:
+            - RewritePath=/api/assessment-service/(?<path>.*), /$\{path}
 
 springdoc:
   swagger-ui:
@@ -53,6 +59,8 @@ springdoc:
         url: /api/subject-service/docs
       - name: exam-service
         url: /api/exam-service/docs
+      - name: assessment-service
+        url: /api/assessment-service/docs
 
 eureka:
   instance:

@@ -30,7 +30,7 @@ public class StudentPDFExporter extends PDFExporter<StudentDTO, Long> {
                                 student -> student.getUser().getUsername(),
                                 StudentDTO::getFirstName,
                                 StudentDTO::getLastName,
-                                StudentDTO::getIndex,
+                                StudentDTO::getRegistrationNumber,
                                 student -> String.valueOf(student.getYearOfEnrollment()),
                                 student -> student.getStudyProgram().getAcronym(),
                                 student -> String.valueOf(student.getAverageGrade()),

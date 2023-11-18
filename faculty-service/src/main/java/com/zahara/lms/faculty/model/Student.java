@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -22,17 +20,28 @@ public class Student extends BaseEntity<Long> {
     @Column(nullable = false)
     private String firstName;
 
+    private String middleName;
+
     @Column(nullable = false)
     private String lastName;
 
-    @Column(name = "s_index", length = 45, nullable = false)
-    private String index;
+    @Column(nullable = false)
+    private String gender;
+
+    private LocalDateTime dateOfBirth;
+
+    @Column(name = "reg_number", length = 45, nullable = false)
+    private String registrationNumber;
 
     @Column(nullable = false)
     private Integer yearOfEnrollment;
 
-    @OneToOne private Thesis thesis;
+    @OneToOne
+    private Thesis thesis;
 
     @ManyToOne(optional = false)
     private StudyProgram studyProgram;
+
+    @OneToOne
+    private StudentInfo studentInfo;
 }

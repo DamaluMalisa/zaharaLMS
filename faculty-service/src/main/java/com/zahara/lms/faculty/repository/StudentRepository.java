@@ -17,15 +17,17 @@ public interface StudentRepository extends BaseRepository<Student, Long> {
     @Query(
             "select x from #{#entityName} x where x.deleted = false "
                     + "and (cast(x.id as string) like :search "
-                    + "or x.firstName like :search or x.lastName like :search "
-                    + "or x.index like :search or cast(x.yearOfEnrollment as string) like :search)")
+                    + "or x.firstName like :search or x.middleName like :search or x.lastName like :search "
+                    + "or x.gender like :search or cast(x.dateOfBirth as string) like :search "
+                    + "or x.registrationNumber like :search or cast(x.yearOfEnrollment as string) like :search)")
     Page<Student> findContaining(Pageable pageable, String search);
 
     @Query(
             "select x from #{#entityName} x where x.deleted = false and x.id in :ids "
                     + "and (cast(x.id as string) like :search "
-                    + "or x.firstName like :search or x.lastName like :search "
-                    + "or x.index like :search or cast(x.yearOfEnrollment as string) like :search)")
+                    + "or x.firstName like :search or x.middleName like :search or x.lastName like :search "
+                    + "or x.gender like :search or cast(x.dateOfBirth as string) like :search "
+                    + "or x.registrationNumber like :search or cast(x.yearOfEnrollment as string) like :search)")
     Page<Student> findByIdContaining(Set<Long> ids, Pageable pageable, String search);
 
     List<Student> findByIdInAndDeletedFalse(Set<Long> ids);

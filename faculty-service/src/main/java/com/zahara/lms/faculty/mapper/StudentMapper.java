@@ -35,7 +35,7 @@ public abstract class StudentMapper implements BaseMapper<Student, StudentDTO, L
 
     public List<StudentDTO> toDTO(List<Student> students) {
         List<StudentDTO> list = students.stream().map(this::toDTO).toList();
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             List<Long> studentIds = list.stream().map(StudentDTO::getId).toList();
             List<Double> averageGrades = subjectFeignClient.getAverageGradesByStudentId(studentIds);
             List<Integer> totalECTS = subjectFeignClient.getTotalECTSByStudentId(studentIds);

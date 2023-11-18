@@ -28,10 +28,7 @@ public class ExamController extends BaseController<Exam, ExamDTO, Long> {
     }
 
     @GetMapping("/subject/{id}")
-    public ResponseEntity<Page<ExamDTO>> getBySubjectId(
-            @PathVariable Long id,
-            Pageable pageable,
-            @RequestParam(defaultValue = "") String search) {
+    public ResponseEntity<Page<ExamDTO>> getBySubjectId(@PathVariable Long id, Pageable pageable, @RequestParam(defaultValue = "") String search) {
         return new ResponseEntity<>(service.findBySubjectId(id, pageable, search), HttpStatus.OK);
     }
 }

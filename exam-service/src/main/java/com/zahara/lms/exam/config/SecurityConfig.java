@@ -48,6 +48,12 @@ public class SecurityConfig {
                         HttpMethod.POST,
                         "/exam-realizations/exam-term/*").hasAuthority(ROLE_STUDENT)
                 .antMatchers(
+                        HttpMethod.POST,
+                        "/exams/**",
+                        "/exam-periods/**",
+                        "/exam-terms/**",
+                        "/exam-types/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                .antMatchers(
                         HttpMethod.PATCH,
                         "/exam-realizations/*/score",
                         "/exam-realizations/exam-term/*/score").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
