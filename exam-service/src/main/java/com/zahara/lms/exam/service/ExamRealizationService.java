@@ -190,8 +190,7 @@ public class ExamRealizationService
     }
 
     @Transactional
-    public List<ExamRealizationDTO> updateScoresByExamTermId(
-            Long id, List<ExamRealizationDTO> examRealizationsDTO) {
+    public List<ExamRealizationDTO> updateScoresByExamTermId(Long id, List<ExamRealizationDTO> examRealizationsDTO) {
         ExamTermDTO examTerm = examTermService.findById(Set.of(id)).get(0);
 
         if (hasAuthority(ROLE_TEACHER)) {

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -15,6 +14,9 @@ import java.util.List;
 @Getter
 @Setter
 public class AssessmentResult extends BaseEntity<Long> {
+    @Column(nullable = false)
+    private Long subjectEnrollmentId;
+
     @ManyToOne(optional = false)
     private StudentSubmission studentSubmission;
 
@@ -23,8 +25,5 @@ public class AssessmentResult extends BaseEntity<Long> {
     @Lob
     @Column(nullable = false)
     private String feedback;
-
-    @OneToMany(mappedBy = "assessmentResult")
-    private List<ComputedResult> computedResults;
 
 }

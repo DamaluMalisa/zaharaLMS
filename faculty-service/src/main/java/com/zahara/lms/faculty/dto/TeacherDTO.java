@@ -18,6 +18,9 @@ public class TeacherDTO extends BaseDTO<Long> {
     @NotNull(message = "User is mandatory")
     private UserDTO user;
 
+    @NotBlank(message = "Profile photo is mandatory")
+    private String profilePhoto;
+
     @NotBlank(message = "First name is mandatory")
     private String firstName;
 

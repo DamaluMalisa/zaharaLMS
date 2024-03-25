@@ -15,11 +15,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.regex.Pattern;
 
 import java.util.List;
 import java.util.Set;
@@ -112,6 +114,37 @@ public class UserService extends BaseService<User, UserDetailsDTO, Long> {
                 tokenGenerator.generateAccessToken(username),
                 tokenGenerator.generateRefreshToken(username));
     }
+
+//    @Transactional
+//    public void changePassword(String username, String oldPassword, String newPassword) {
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//        if (userDetails == null) {
+//            throw new NotFoundException("User not found");
+//        }
+//
+//        User user = repository.findByUsername(username)
+//                .orElseThrow(() -> new NotFoundException("User not found"));
+//
+//        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+//            throw new ForbiddenException("Old password is incorrect");
+//        }
+//
+//        user.setPassword(passwordEncoder.encode(newPassword));
+//        repository.save(user);
+//    }
+//
+//
+//    private void validatePassword(String password) {
+//        int PASSWORD_MIN_LENGTH = 8;
+//        if (password.length() < PASSWORD_MIN_LENGTH ||
+//                !Pattern.compile("[a-z]").matcher(password).find() ||
+//                !Pattern.compile("[A-Z]").matcher(password).find() ||
+//                !Pattern.compile("\\d").matcher(password).find() ||
+//                !Pattern.compile("[!@#$%^&*()-_=+{};:,<.>?]").matcher(password).find()) {
+//            throw new IllegalArgumentException("Password must meet the standard password criteria");
+//        }
+//    }
+
 
     public TokensDTO refresh(String refreshToken) {
         refreshToken = refreshToken.substring(BEARER_PREFIX.length());

@@ -1,22 +1,22 @@
 package com.zahara.lms.subject.mapper;
 
 import com.zahara.lms.shared.mapper.BaseMapper;
+import com.zahara.lms.subject.dto.SubjectAnnouncementDTO;
 import com.zahara.lms.subject.dto.SubjectDTO;
-import com.zahara.lms.subject.dto.SubjectNotificationDTO;
 import com.zahara.lms.subject.dto.TeacherDTO;
 import com.zahara.lms.subject.model.Subject;
-import com.zahara.lms.subject.model.SubjectNotification;
+import com.zahara.lms.subject.model.SubjectAnnouncement;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface SubjectNotificationMapper
-        extends BaseMapper<SubjectNotification, SubjectNotificationDTO, Long> {
+public interface SubjectAnnouncementMapper
+        extends BaseMapper<SubjectAnnouncement, SubjectAnnouncementDTO, Long> {
     @Mapping(source = "teacherId", target = "teacher")
-    SubjectNotificationDTO toDTO(SubjectNotification subjectNotification);
+    SubjectAnnouncementDTO toDTO(SubjectAnnouncement subjectAnnouncement);
 
     @Mapping(source = "teacher.id", target = "teacherId")
-    SubjectNotification toModel(SubjectNotificationDTO subjectNotificationDTO);
+    SubjectAnnouncement toModel(SubjectAnnouncementDTO subjectAnnouncementDTO);
 
     TeacherDTO teacherDTOFromId(Long id);
 

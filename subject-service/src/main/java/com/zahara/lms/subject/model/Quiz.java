@@ -17,20 +17,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectNotification extends BaseEntity<Long> {
+public class Quiz extends BaseEntity<Long> {
     @Column(nullable = false)
-    private String name;
+    private String title;
 
     @Lob
     @Column(nullable = false)
-    private String description;
+    private String content;
 
     @Column(nullable = false)
-    private LocalDateTime publicationDate;
+    private LocalDateTime timestamp;
 
-    @Column(nullable = false)
-    private Long teacherId;
+    private LocalDateTime dueDate;
 
     @ManyToOne(optional = false)
-    private Subject subject;
+    private Bundle bundle;
+
+
 }

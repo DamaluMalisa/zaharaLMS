@@ -15,6 +15,7 @@ import java.util.Set;
 public interface FacultyFeignClient {
     @GetMapping("/faculties/{id}")
     List<FacultyDTO> getFaculty(@PathVariable Set<Long> id);
+    
     @GetMapping("/study-programs/{id}")
     List<StudyProgramDTO> getStudyProgram(@PathVariable Set<Long> id);
 

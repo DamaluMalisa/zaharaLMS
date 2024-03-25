@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -23,6 +24,6 @@ public class SecondaryAndOrAdvancedEducation extends BaseEntity<Long> {
     private String examCenter;
     private int year;
 
-    @OneToOne
+    @ManyToOne(optional = false)
     private StudentInfo studentInfo;
 }

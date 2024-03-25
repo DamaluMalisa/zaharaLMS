@@ -4,13 +4,13 @@ import com.zahara.lms.shared.exception.ForbiddenException;
 import com.zahara.lms.shared.exception.NotFoundException;
 import com.zahara.lms.shared.service.ExtendedService;
 import com.zahara.lms.subject.client.FacultyFeignClient;
+import com.zahara.lms.subject.dto.SubjectAnnouncementDTO;
 import com.zahara.lms.subject.dto.SubjectDTO;
-import com.zahara.lms.subject.dto.SubjectNotificationDTO;
 import com.zahara.lms.subject.dto.TeacherDTO;
-import com.zahara.lms.subject.mapper.SubjectNotificationMapper;
+import com.zahara.lms.subject.mapper.SubjectAnnouncementMapper;
 import com.zahara.lms.subject.model.Subject;
-import com.zahara.lms.subject.model.SubjectNotification;
-import com.zahara.lms.subject.repository.SubjectNotificationRepository;
+import com.zahara.lms.subject.model.SubjectAnnouncement;
+import com.zahara.lms.subject.repository.SubjectAnnouncementRepository;
 import com.zahara.lms.subject.repository.SubjectRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,16 +24,16 @@ import java.util.Set;
 import static com.zahara.lms.shared.security.SecurityUtils.*;
 
 @Service
-public class SubjectNotificationService
-        extends ExtendedService<SubjectNotification, SubjectNotificationDTO, Long> {
-    private final SubjectNotificationRepository repository;
-    private final SubjectNotificationMapper mapper;
+public class SubjectAnnouncementService
+        extends ExtendedService<SubjectAnnouncement, SubjectAnnouncementDTO, Long> {
+    private final SubjectAnnouncementRepository repository;
+    private final SubjectAnnouncementMapper mapper;
     private final SubjectRepository subjectRepository;
     private final FacultyFeignClient facultyFeignClient;
 
-    public SubjectNotificationService(
-            SubjectNotificationRepository repository,
-            SubjectNotificationMapper mapper,
+    public SubjectAnnouncementService(
+            SubjectAnnouncementRepository repository,
+            SubjectAnnouncementMapper mapper,
             SubjectRepository subjectRepository,
             FacultyFeignClient facultyFeignClient) {
         super(repository, mapper);
@@ -45,22 +45,22 @@ public class SubjectNotificationService
 
     @Override
     @Transactional
-    public SubjectNotificationDTO save(SubjectNotificationDTO subjectNotificationDTO) {
+    public SubjectAnnouncementDTO save(SubjectAnnouncementDTO subjectAnnouncementDTO) {
         if (hasAuthority(ROLE_TEACHER)) {
             TeacherDTO teacher = facultyFeignClient.getTeacher(Set.of(getTeacherId())).get(0);
-            SubjectDTO subject = subjectNotificationDTO.getSubject();
+            SubjectDTO subject = subjectAnnouncementDTO.getSubject();
             if (!subject.getProfessor().getId().equals(teacher.getId())
                     && !subject.getAssistant().getId().equals(teacher.getId())) {
                 throw new ForbiddenException(
                         "You are not allowed to manage this subject notification");
             }
 
-            if (subjectNotificationDTO.getTeacher() == null) {
-                subjectNotificationDTO.setTeacher(teacher);
+            if (subjectAnnouncementDTO.getTeacher() == null) {
+                subjectAnnouncementDTO.setTeacher(teacher);
             }
         }
 
-        return super.save(subjectNotificationDTO);
+        return super.save(subjectAnnouncementDTO);
     }
 
     @Override
@@ -68,10 +68,10 @@ public class SubjectNotificationService
     public void delete(Set<Long> id) {
         if (hasAuthority(ROLE_TEACHER)) {
             Long teacherId = getTeacherId();
-            List<SubjectNotification> subjectNotifications =
-                    (List<SubjectNotification>) repository.findAllById(id);
+            List<SubjectAnnouncement> subjectAnnouncements =
+                    (List<SubjectAnnouncement>) repository.findAllById(id);
             boolean forbidden =
-                    subjectNotifications.stream()
+                    subjectAnnouncements.stream()
                             .anyMatch(
                                     subjectNotification -> {
                                         Subject subject = subjectNotification.getSubject();
@@ -88,44 +88,44 @@ public class SubjectNotificationService
     }
 
     @Override
-    protected List<SubjectNotificationDTO> mapMissingValues(
-            List<SubjectNotificationDTO> subjectNotifications) {
+    protected List<SubjectAnnouncementDTO> mapMissingValues(
+            List<SubjectAnnouncementDTO> subjectAnnouncements) {
         map(
-                subjectNotifications,
-                SubjectNotificationDTO::getTeacher,
-                SubjectNotificationDTO::setTeacher,
+                subjectAnnouncements,
+                SubjectAnnouncementDTO::getTeacher,
+                SubjectAnnouncementDTO::setTeacher,
                 facultyFeignClient::getTeacher);
 
-        return subjectNotifications;
+        return subjectAnnouncements;
     }
 
-    public List<SubjectNotificationDTO> findBySubjectId(Long id) {
+    public List<SubjectAnnouncementDTO> findBySubjectId(Long id) {
         if (!subjectRepository.existsById(id)) {
             throw new NotFoundException("Subject not found");
         }
 
-        List<SubjectNotificationDTO> subjectNotifications =
+        List<SubjectAnnouncementDTO> subjectAnnouncements =
                 mapper.toDTO(
-                        repository.findBySubjectIdAndDeletedFalseOrderByPublicationDateDesc(id));
-        return subjectNotifications.isEmpty()
-                ? subjectNotifications
-                : this.mapMissingValues(subjectNotifications);
+                        repository.findBySubjectIdAndDeletedFalseOrderByTimestampDesc(id));
+        return subjectAnnouncements.isEmpty()
+                ? subjectAnnouncements
+                : this.mapMissingValues(subjectAnnouncements);
     }
 
-    public Page<SubjectNotificationDTO> findBySubjectId(Long id, Pageable pageable, String search) {
+    public Page<SubjectAnnouncementDTO> findBySubjectId(Long id, Pageable pageable, String search) {
         if (!subjectRepository.existsById(id)) {
             throw new NotFoundException("Subject not found");
         }
 
-        Page<SubjectNotificationDTO> subjectNotifications =
+        Page<SubjectAnnouncementDTO> subjectAnnouncements =
                 repository
                         .findBySubjectIdContaining(id, pageable, "%" + search + "%")
                         .map(mapper::toDTO);
-        return subjectNotifications.getContent().isEmpty()
-                ? subjectNotifications
+        return subjectAnnouncements.getContent().isEmpty()
+                ? subjectAnnouncements
                 : new PageImpl<>(
-                        this.mapMissingValues(subjectNotifications.getContent()),
+                        this.mapMissingValues(subjectAnnouncements.getContent()),
                         pageable,
-                        subjectNotifications.getTotalElements());
+                subjectAnnouncements.getTotalElements());
     }
 }

@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +23,7 @@ public class Student extends BaseEntity<Long> {
     @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
     private String middleName;
 
     @Column(nullable = false)
@@ -28,6 +32,7 @@ public class Student extends BaseEntity<Long> {
     @Column(nullable = false)
     private String gender;
 
+    @Column(nullable = false)
     private LocalDateTime dateOfBirth;
 
     @Column(name = "reg_number", length = 45, nullable = false)
@@ -42,6 +47,6 @@ public class Student extends BaseEntity<Long> {
     @ManyToOne(optional = false)
     private StudyProgram studyProgram;
 
-    @OneToOne
-    private StudentInfo studentInfo;
+    @OneToMany(mappedBy = "student")
+    private List<StudentInfo> studentInfo;
 }

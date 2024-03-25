@@ -36,8 +36,8 @@ public class SubjectController extends BaseController<Subject, SubjectDTO, Long>
     }
 
     @PatchMapping("/{id}/syllabus")
-    public ResponseEntity<SubjectDTO> patchSyllabus(
-            @PathVariable Long id, @RequestBody String syllabus) {
-        return new ResponseEntity<>(this.service.updateSyllabus(id, syllabus), HttpStatus.OK);
+    public ResponseEntity<SubjectDTO> patchDescription(
+            @PathVariable Long id, @RequestBody String description) {
+        return new ResponseEntity<>(this.service.updateDescription(id, description), HttpStatus.OK);
     }
 }

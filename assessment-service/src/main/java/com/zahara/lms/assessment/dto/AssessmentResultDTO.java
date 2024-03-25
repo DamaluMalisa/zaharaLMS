@@ -7,12 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class AssessmentResultDTO  extends BaseDTO<Long> {
+
+    @NotNull(message = "Subject enrollment is mandatory")
+    private SubjectEnrollmentDTO subjectEnrollment;
 
     @NotBlank(message = "Student submission is mandatory")
     private StudentSubmissionDTO studentSubmission;

@@ -23,4 +23,6 @@ public class SecondaryAndOrAdvancedEducationDTO extends BaseDTO<Long> {
     @NotNull(message = "Year is mandatory")
     private Integer year;
 
+    private StudentInfoDTO studentInfo;
+
 }

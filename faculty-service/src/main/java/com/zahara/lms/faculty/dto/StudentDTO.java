@@ -25,6 +25,7 @@ public class StudentDTO extends BaseDTO<Long> {
     @NotBlank(message = "First name is mandatory")
     private String firstName;
 
+    @NotBlank(message = "Middle name is mandatory")
     private String middleName;
 
     @NotBlank(message = "Last name is mandatory")

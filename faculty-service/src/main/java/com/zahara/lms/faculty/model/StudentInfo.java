@@ -4,6 +4,8 @@ import com.zahara.lms.shared.model.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -43,9 +45,9 @@ public class StudentInfo extends BaseEntity<Long> {
 
     private String financialAidStatus;
 
-    @OneToOne(optional = false)
-    private SecondaryAndOrAdvancedEducation secondaryAndOrAdvancedEducation;
+    @OneToMany(mappedBy = "studentInfo")
+    private Set<SecondaryAndOrAdvancedEducation> secondaryAndOrAdvancedEducation = new HashSet<>();
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private Student student;
 }

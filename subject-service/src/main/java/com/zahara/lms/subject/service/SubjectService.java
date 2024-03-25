@@ -80,7 +80,7 @@ public class SubjectService extends ExtendedService<Subject, SubjectDTO, Long> {
     }
 
     @Transactional
-    public SubjectDTO updateSyllabus(Long id, String syllabus) {
+    public SubjectDTO updateDescription(Long id, String description) {
         Subject subject =
                 repository
                         .findById(id)
@@ -92,7 +92,7 @@ public class SubjectService extends ExtendedService<Subject, SubjectDTO, Long> {
             throw new ForbiddenException("You are not allowed to update this subject syllabus");
         }
 
-        subject.setSyllabus(syllabus);
+        subject.setDescription(description);
         return mapper.toDTO(repository.save(subject));
     }
 }

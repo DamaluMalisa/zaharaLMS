@@ -35,7 +35,7 @@ public class SecurityConfig {
                         HttpMethod.GET,
                         "/subjects/**",
                         "/subject-materials/**",
-                        "/subject-notifications/**",
+                        "/subject-announcement/**",
                         "/subject-terms/**").permitAll()
                 .antMatchers(
                         HttpMethod.GET,
@@ -55,7 +55,7 @@ public class SecurityConfig {
                         "/subject-enrollments/*/grade").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
                 .antMatchers(
                         "/subject-materials/**",
-                        "/subject-notifications/**",
+                        "/subject-announcement/**",
                         "/subject-terms/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
                 .anyRequest().hasAuthority(ROLE_ADMIN)
                 .and()

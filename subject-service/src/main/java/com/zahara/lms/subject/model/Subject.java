@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,10 +25,28 @@ public class Subject extends BaseEntity<Long> {
 
     @Lob
     @Column(nullable = false)
-    private String syllabus;
+    private String description;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(nullable = false)
+    private String tasks;
+
+    @Column
+    private Integer progress;
+
+    @Column
+    private LocalDateTime startDate;
+
+    @Column
+    private LocalDateTime endDate;
 
     @Column(nullable = false)
     private Integer semester;
+
+    @Column(nullable = false)
+    private Integer credits;
 
     @Column(nullable = false)
     private Integer ects;
@@ -45,11 +64,14 @@ public class Subject extends BaseEntity<Long> {
     private Set<SubjectEnrollment> subjectEnrollments = new HashSet<>();
 
     @OneToMany(mappedBy = "subject")
-    private Set<SubjectNotification> subjectNotifications = new HashSet<>();
+    private Set<SubjectAnnouncement> subjectAnnouncements = new HashSet<>();
 
     @OneToMany(mappedBy = "subject")
     private Set<SubjectMaterial> subjectMaterials = new HashSet<>();
 
     @OneToMany(mappedBy = "subject")
     private Set<SubjectTerm> subjectTerms = new HashSet<>();
+
+    @OneToMany(mappedBy = "subject")
+    private Set<Bundle> bundles = new HashSet<>();
 }

@@ -1,4 +1,4 @@
-package com.zahara.lms.assessment.model;
+package com.zahara.lms.subject.model;
 
 import com.zahara.lms.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -8,24 +8,27 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class ComputedResult extends BaseEntity<Long> {
+public class QuizSubmission extends BaseEntity<Long> {
     @Column(nullable = false)
     private Long studentId;
 
     @ManyToOne(optional = false)
-    private AssessmentResult assessmentResult;
+    private Quiz quiz;
 
-    @ManyToOne(optional = false)
-    private AssessmentType assessmentType;
+    @Lob
+    @Column(nullable = false)
+    private String content;
 
-    @ManyToOne(optional = false)
-    private StudentCategory studentCategory;
+    @Column(nullable = false)
+    private LocalDateTime SubmissionTimestamp;
 
 }

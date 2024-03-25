@@ -26,6 +26,8 @@ public class Teacher extends BaseEntity<Long> {
     @Column(nullable = false)
     private String lastName;
 
+    private String profilePhoto;
+
     @OneToMany(mappedBy = "dean")
     private Set<Faculty> faculties = new HashSet<>();
 

@@ -50,4 +50,6 @@ public class StudentInfoDTO extends BaseDTO<Long> {
 
     private String financialAidStatus;
 
+    private StudentDTO studentDTO;
+
 }

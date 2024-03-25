@@ -38,7 +38,8 @@ public class SecurityConfig {
                         "/exam-terms/**",
                         "/assessment-types/**",
                         "/student-category/**",
-                        "/assessments/**").permitAll()
+                        "/assessments/**",
+                        "/assessment-result/**").permitAll()
                 .antMatchers(
                         HttpMethod.GET,
                         "/exam-realizations/student/*",
