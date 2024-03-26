@@ -26,4 +26,6 @@ public interface BundleRepository extends BaseRepository<Bundle, Long> {
             Long subjectId, Pageable pageable, String search);
 
     List<Bundle> findBySubjectIdAndDeletedFalseOrderByTimestampDesc(Long subjectId);
+
+    List<Bundle> findByTeacherIdAndDeletedFalseOrderByTimestampDesc(Long teacherId);
 }

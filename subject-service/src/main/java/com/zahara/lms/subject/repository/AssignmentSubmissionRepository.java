@@ -23,8 +23,8 @@ public interface AssignmentSubmissionRepository extends BaseRepository<Assignmen
             "select x from #{#entityName} x where x.deleted = false and x.assignment.id = :assignmentId "
                     + "and (cast(x.id as string) like :search "
                     + "or x.content like :search or cast(x.submissionTimestamp as string) like :search)")
-    Page<AssignmentSubmission> findByAssessmentIdContaining(
-            Long assessmentId, Pageable pageable, String search);
+    Page<AssignmentSubmission> findByAssignmentIdContaining(
+            Long assignmentId, Pageable pageable, String search);
 
     @Query(
             "select x from #{#entityName} x where x.deleted = false and x.studentId = :studentId "
@@ -33,7 +33,7 @@ public interface AssignmentSubmissionRepository extends BaseRepository<Assignmen
     Page<AssignmentSubmission> findByStudentIdContaining(
             Long studentId, Pageable pageable, String search);
 
-    List<AssignmentSubmission> findByAssessmentIdAndDeletedFalseOrderBySubmissionTimestampDesc(Long assessmentId);
+    List<AssignmentSubmission> findByAssignmentIdAndDeletedFalseOrderBySubmissionTimestampDesc(Long assignmentId);
 
     List<AssignmentSubmission> findByStudentIdAndDeletedFalseOrderBySubmissionTimestampDesc(Long studentId);
 }

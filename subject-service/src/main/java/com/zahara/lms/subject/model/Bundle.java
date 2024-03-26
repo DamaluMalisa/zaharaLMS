@@ -30,6 +30,9 @@ public class Bundle extends BaseEntity<Long> {
     @ManyToOne(optional = false)
     private Subject subject;
 
+    @Column(nullable = false)
+    private Long teacherId;
+
     @OneToMany(mappedBy = "bundle")
     private Set<Page> pages = new HashSet<>();
 
@@ -39,7 +42,7 @@ public class Bundle extends BaseEntity<Long> {
     @OneToMany(mappedBy = "bundle")
     private Set<Quiz> quizzes = new HashSet<>();
 
-    @OneToMany(mappedBy = "file")
+    @OneToMany(mappedBy = "bundle")
     private Set<File> files = new HashSet<>();
 }
 

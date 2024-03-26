@@ -30,6 +30,9 @@ public class Assignment extends BaseEntity<Long> {
 
     private LocalDateTime dueDate;
 
+    @Column(nullable = false)
+    private Long teacherId;
+
     @ManyToOne(optional = false)
     private Bundle bundle;
 

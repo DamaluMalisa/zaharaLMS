@@ -24,9 +24,11 @@ public class AssignmentDTO extends BaseDTO<Long> {
     @NotNull(message = "timestamp is mandatory")
     private LocalDateTime timestamp;
 
+    @NotNull(message = "due date is mandatory")
     private LocalDateTime dueDate;
 
-    @NotNull(message = "Bundle is mandatory")
+    private TeacherDTO teacher;
+
     private BundleDTO bundle;
 
 

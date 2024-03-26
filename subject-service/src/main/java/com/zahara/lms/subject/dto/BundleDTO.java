@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,6 +23,8 @@ public class BundleDTO extends BaseDTO<Long> {
 
     @NotNull(message = "timestamp is mandatory")
     private LocalDateTime timestamp;
+
+    private TeacherDTO teacher;
 
     @NotNull(message = "subject is mandatory")
     private SubjectDTO subject;

@@ -28,6 +28,9 @@ public class Page extends BaseEntity<Long> {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
+    @Column(nullable = false)
+    private Long teacherId;
+
     @ManyToOne(optional = false)
     private Bundle bundle;
 

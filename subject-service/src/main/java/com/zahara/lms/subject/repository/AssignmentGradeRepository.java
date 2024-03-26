@@ -22,8 +22,9 @@ public interface AssignmentGradeRepository extends BaseRepository<AssignmentGrad
             "select x from #{#entityName} x where x.deleted = false and x.assignmentSubmission.id = :assignmentSubmissionId "
                     + "and (cast(x.id as string) like :search "
                     + "or cast(x.grade as string) like :search or x.feedback like :search)")
-    Page<AssignmentGrade> findByQuizSubmissionIdContaining(
-            Long AssignmentSubmissionId, Pageable pageable, String search);
+    Page<AssignmentGrade> findByAssignmentSubmissionIdContaining(
+            Long assignmentSubmissionId, Pageable pageable, String search);
+
 
     @Query(
             "select x from #{#entityName} x where x.deleted = false and x.studentId = :studentId "
@@ -32,7 +33,7 @@ public interface AssignmentGradeRepository extends BaseRepository<AssignmentGrad
     Page<AssignmentGrade> findByStudentIdContaining(
             Long studentId, Pageable pageable, String search);
 
-    List<AssignmentGrade> findByAssignmentSubmissionIdAndDeletedFalse(Long AssignmentSubmissionId);
+    List<AssignmentGrade> findByAssignmentSubmissionIdAndDeletedFalse(Long assignmentSubmissionId);
 
     List<AssignmentGrade> findByStudentIdAndDeletedFalse(Long studentId);
 }

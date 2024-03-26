@@ -5,12 +5,12 @@ import com.zahara.lms.shared.exception.NotFoundException;
 import com.zahara.lms.shared.service.ExtendedService;
 import com.zahara.lms.subject.client.FacultyFeignClient;
 import com.zahara.lms.subject.dto.*;
-import com.zahara.lms.subject.dto.FileDTO;
-import com.zahara.lms.subject.mapper.FileMapper;
-import com.zahara.lms.subject.model.File;
+import com.zahara.lms.subject.dto.AssignmentDTO;
+import com.zahara.lms.subject.mapper.AssignmentMapper;
+import com.zahara.lms.subject.model.Assignment;
 import com.zahara.lms.subject.model.Subject;
 import com.zahara.lms.subject.repository.BundleRepository;
-import com.zahara.lms.subject.repository.FileRepository;
+import com.zahara.lms.subject.repository.AssignmentRepository;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,15 +24,15 @@ import static com.zahara.lms.shared.security.SecurityUtils.*;
 import static com.zahara.lms.shared.security.SecurityUtils.getTeacherId;
 
 @Service
-public class FileService  extends ExtendedService<File, FileDTO, Long> {
-    private final FileRepository repository;
-    private final FileMapper mapper;
+public class AssignmentService  extends ExtendedService<Assignment, AssignmentDTO, Long> {
+    private final AssignmentRepository repository;
+    private final AssignmentMapper mapper;
     private final BundleRepository bundleRepository;
     private final FacultyFeignClient facultyFeignClient;
 
-    public FileService(
-            FileRepository repository,
-            FileMapper mapper,
+    public AssignmentService(
+            AssignmentRepository repository,
+            AssignmentMapper mapper,
             BundleRepository bundleRepository,
             FacultyFeignClient facultyFeignClient) {
         super(repository, mapper);
@@ -44,22 +44,22 @@ public class FileService  extends ExtendedService<File, FileDTO, Long> {
 
     @Override
     @Transactional
-    public FileDTO save(FileDTO fileDTO) {
+    public AssignmentDTO save(AssignmentDTO assignmentDTO) {
         if (hasAuthority(ROLE_TEACHER)) {
             TeacherDTO teacher = facultyFeignClient.getTeacher(Set.of(getTeacherId())).get(0);
-            SubjectDTO subject = fileDTO.getBundle().getSubject();
+            SubjectDTO subject = assignmentDTO.getBundle().getSubject();
             if (!subject.getProfessor().getId().equals(teacher.getId())
                     && !subject.getAssistant().getId().equals(teacher.getId())) {
                 throw new ForbiddenException(
-                        "You are not allowed manage this File");
+                        "You are not allowed manage this Assignment");
             }
 
-            if (fileDTO.getTeacher() == null) {
-                fileDTO.setTeacher(teacher);
+            if (assignmentDTO.getTeacher() == null) {
+                assignmentDTO.setTeacher(teacher);
             }
         }
 
-        return super.save(fileDTO);
+        return super.save(assignmentDTO);
     }
 
     @Override
@@ -67,19 +67,19 @@ public class FileService  extends ExtendedService<File, FileDTO, Long> {
     public void delete(Set<Long> id) {
         if (hasAuthority(ROLE_TEACHER)) {
             Long teacherId = getTeacherId();
-            List<File> files =
-                    (List<File>) repository.findAllById(id);
+            List<Assignment> assignments =
+                    (List<Assignment>) repository.findAllById(id);
             boolean forbidden =
-                    files.stream()
+                    assignments.stream()
                             .anyMatch(
-                                    file -> {
-                                        Subject subject = file.getBundle().getSubject();
+                                    assignment -> {
+                                        Subject subject = assignment.getBundle().getSubject();
                                         return !subject.getProfessorId().equals(teacherId)
                                                 && !subject.getAssistantId().equals(teacherId);
                                     });
             if (forbidden) {
                 throw new ForbiddenException(
-                        "You are not allowed to delete these Quiz");
+                        "You are not allowed to delete these Assignments");
             }
         }
 
@@ -88,44 +88,44 @@ public class FileService  extends ExtendedService<File, FileDTO, Long> {
 
 
     @Override
-    protected List<FileDTO> mapMissingValues(List<FileDTO> files) {
+    protected List<AssignmentDTO> mapMissingValues(List<AssignmentDTO> assignments) {
         map(
-                files,
-                FileDTO::getTeacher,
-                FileDTO::setTeacher,
+                assignments,
+                AssignmentDTO::getTeacher,
+                AssignmentDTO::setTeacher,
                 facultyFeignClient::getTeacher);
 
-        return files;
+        return assignments;
     }
 
 
-    public List<FileDTO> findByBundleId(Long id) {
-        if (!bundleRepository.existsById(id)) {
-            throw new NotFoundException("bundle not found");
-        }
-
-        List<FileDTO> files =
-                mapper.toDTO(
-                        repository.findByBundleIdAndDeletedFalseOrderByUploadTimestampDesc(id));
-        return files.isEmpty()
-                ? files
-                : this.mapMissingValues(files);
-    }
-
-    public Page<FileDTO> findByBundleId(Long id, Pageable pageable, String search) {
+    public List<AssignmentDTO> findByBundleId(Long id) {
         if (!bundleRepository.existsById(id)) {
             throw new NotFoundException("Bundle not found");
         }
 
-        Page<FileDTO> files =
+        List<AssignmentDTO> assignments =
+                mapper.toDTO(
+                        repository.findByBundleIdAndDeletedFalseOrderByTimestampDesc(id));
+        return assignments.isEmpty()
+                ? assignments
+                : this.mapMissingValues(assignments);
+    }
+
+    public Page<AssignmentDTO> findByBundleId(Long id, Pageable pageable, String search) {
+        if (!bundleRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        Page<AssignmentDTO> assignments =
                 repository
                         .findByBundleIdContaining(id, pageable, "%" + search + "%")
                         .map(mapper::toDTO);
-        return files.getContent().isEmpty()
-                ? files
+        return assignments.getContent().isEmpty()
+                ? assignments
                 : new PageImpl<>(
-                this.mapMissingValues(files.getContent()),
+                this.mapMissingValues(assignments.getContent()),
                 pageable,
-                files.getTotalElements());
+                assignments.getTotalElements());
     }
 }

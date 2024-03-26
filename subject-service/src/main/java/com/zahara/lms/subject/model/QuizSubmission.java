@@ -29,6 +29,6 @@ public class QuizSubmission extends BaseEntity<Long> {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime SubmissionTimestamp;
+    private LocalDateTime submissionTimestamp;
 
 }

@@ -32,6 +32,9 @@ public class File extends BaseEntity<Long> {
     @Column(nullable = false)
     private LocalDateTime uploadTimestamp;
 
+    @Column(nullable = false)
+    private Long teacherId;
+
     @ManyToOne(optional = false)
     private Bundle bundle;
 

@@ -24,8 +24,9 @@ public class PageDTO extends BaseDTO<Long> {
     @NotNull(message = "timestamp is mandatory")
     private LocalDateTime timestamp;
 
-    @NotNull(message = "Page is mandatory")
-    private PageDTO page;
+    private TeacherDTO teacher;
+
+    private BundleDTO bundle;
 
 
 }

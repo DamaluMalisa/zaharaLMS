@@ -26,7 +26,8 @@ public class QuizDTO extends BaseDTO<Long> {
 
     private LocalDateTime dueDate;
 
-    @NotNull(message = "Bundle is mandatory")
+    private TeacherDTO teacher;
+
     private BundleDTO bundle;
 
 
