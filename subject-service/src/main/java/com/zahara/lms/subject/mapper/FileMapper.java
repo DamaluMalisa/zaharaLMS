@@ -11,11 +11,4 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface FileMapper extends BaseMapper<File, FileDTO, Long> {
-    @Mapping(source = "teacherId", target = "teacher")
-    FileDTO toDTO(File file);
-
-    @Mapping(source = "teacher.id", target = "teacherId")
-    File toModel(FileDTO fileDTO);
-
-    TeacherDTO teacherDTOFromId(Long id);
 }

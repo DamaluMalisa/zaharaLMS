@@ -67,11 +67,5 @@ public class Subject extends BaseEntity<Long> {
     private Set<SubjectAnnouncement> subjectAnnouncements = new HashSet<>();
 
     @OneToMany(mappedBy = "subject")
-    private Set<SubjectMaterial> subjectMaterials = new HashSet<>();
-
-    @OneToMany(mappedBy = "subject")
-    private Set<SubjectTerm> subjectTerms = new HashSet<>();
-
-    @OneToMany(mappedBy = "subject")
     private Set<Bundle> bundles = new HashSet<>();
 }

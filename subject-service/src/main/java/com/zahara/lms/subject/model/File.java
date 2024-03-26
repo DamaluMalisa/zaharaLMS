@@ -27,15 +27,12 @@ public class File extends BaseEntity<Long> {
 
     @Lob
     @Column(nullable = false)
-    private byte[] data;
+    private String filePath;
 
     @Column(nullable = false)
     private LocalDateTime uploadTimestamp;
 
-    @Column(nullable = false)
-    private Long teacherId;
-
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Bundle bundle;
 
 

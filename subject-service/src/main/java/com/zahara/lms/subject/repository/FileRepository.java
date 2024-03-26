@@ -15,13 +15,13 @@ public interface FileRepository extends BaseRepository<File, Long> {
     @Query(
             "select x from #{#entityName} x where x.deleted = false "
                     + "and (cast(x.id as string) like :search "
-                    + "or x.fileName like :search or x.contentType like :search or cast(x.data as string) like :search or cast(x.uploadTimestamp as string) like :search)")
+                    + "or x.fileName like :search or x.contentType like :search or x.filePath like :search or cast(x.uploadTimestamp as string) like :search)")
     Page<File> findContaining(Pageable pageable, String search);
 
     @Query(
             "select x from #{#entityName} x where x.deleted = false and x.bundle.id = :bundleId "
                     + "and (cast(x.id as string) like :search "
-                    + "or x.fileName like :search or x.contentType like :search or cast(x.data as string) like :search or cast(x.uploadTimestamp as string) like :search)")
+                    + "or x.fileName like :search or x.contentType like :search or x.filePath like :search or cast(x.uploadTimestamp as string) like :search)")
     Page<File> findByBundleIdContaining(
             Long bundleId, Pageable pageable, String search);
 

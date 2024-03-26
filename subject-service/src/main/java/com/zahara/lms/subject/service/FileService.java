@@ -1,102 +1,117 @@
 package com.zahara.lms.subject.service;
 
-import com.zahara.lms.shared.exception.ForbiddenException;
 import com.zahara.lms.shared.exception.NotFoundException;
-import com.zahara.lms.shared.service.ExtendedService;
-import com.zahara.lms.subject.client.FacultyFeignClient;
-import com.zahara.lms.subject.dto.*;
+import com.zahara.lms.shared.service.BaseService;
 import com.zahara.lms.subject.dto.FileDTO;
+import com.zahara.lms.subject.mapper.BundleMapper;
 import com.zahara.lms.subject.mapper.FileMapper;
+import com.zahara.lms.subject.model.Bundle;
 import com.zahara.lms.subject.model.File;
-import com.zahara.lms.subject.model.Subject;
 import com.zahara.lms.subject.repository.BundleRepository;
 import com.zahara.lms.subject.repository.FileRepository;
-import org.springframework.data.domain.PageImpl;
+import org.apache.tika.Tika;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
-import static com.zahara.lms.shared.security.SecurityUtils.*;
-import static com.zahara.lms.shared.security.SecurityUtils.getTeacherId;
+import static com.zahara.lms.subject.util.Utility.generateUniqueFileName;
 
 @Service
-public class FileService  extends ExtendedService<File, FileDTO, Long> {
+public class FileService  extends BaseService<File, FileDTO, Long> {
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+    private final Tika tika = new Tika();
     private final FileRepository repository;
     private final FileMapper mapper;
     private final BundleRepository bundleRepository;
-    private final FacultyFeignClient facultyFeignClient;
+    private final BundleMapper bundleMapper;
+
 
     public FileService(
             FileRepository repository,
             FileMapper mapper,
             BundleRepository bundleRepository,
-            FacultyFeignClient facultyFeignClient) {
+            BundleMapper bundleMapper) {
         super(repository, mapper);
         this.repository = repository;
         this.mapper = mapper;
         this.bundleRepository = bundleRepository;
-        this.facultyFeignClient = facultyFeignClient;
+        this.bundleMapper = bundleMapper;
     }
 
-    @Override
     @Transactional
-    public FileDTO save(FileDTO fileDTO) {
-        if (hasAuthority(ROLE_TEACHER)) {
-            TeacherDTO teacher = facultyFeignClient.getTeacher(Set.of(getTeacherId())).get(0);
-            SubjectDTO subject = fileDTO.getBundle().getSubject();
-            if (!subject.getProfessor().getId().equals(teacher.getId())
-                    && !subject.getAssistant().getId().equals(teacher.getId())) {
-                throw new ForbiddenException(
-                        "You are not allowed manage this File");
-            }
+    public String uploadFile(MultipartFile file, Long bundleId) throws IOException {
 
-            if (fileDTO.getTeacher() == null) {
-                fileDTO.setTeacher(teacher);
-            }
+        FileDTO fileDTO = new FileDTO();
+        if (bundleId != null) {
+            Bundle bundle = bundleRepository.findById(bundleId)
+                    .orElseThrow(() -> new NotFoundException("Bundle not found with ID: " + bundleId));
+            fileDTO.setBundle(bundleMapper.toDTO(bundle));
         }
 
-        return super.save(fileDTO);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Set<Long> id) {
-        if (hasAuthority(ROLE_TEACHER)) {
-            Long teacherId = getTeacherId();
-            List<File> files =
-                    (List<File>) repository.findAllById(id);
-            boolean forbidden =
-                    files.stream()
-                            .anyMatch(
-                                    file -> {
-                                        Subject subject = file.getBundle().getSubject();
-                                        return !subject.getProfessorId().equals(teacherId)
-                                                && !subject.getAssistantId().equals(teacherId);
-                                    });
-            if (forbidden) {
-                throw new ForbiddenException(
-                        "You are not allowed to delete these Quiz");
-            }
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
         }
 
-        super.delete(id);
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || fileName.isEmpty()) {
+            fileName = generateUniqueFileName();
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || contentType.isBlank() || contentType.equals("application/octet-stream")) {
+            contentType = tika.detect(file.getInputStream());
+        }
+
+        Path filePath = uploadPath.resolve(fileName);
+        file.transferTo(filePath);
+
+
+        fileDTO.setFileName(fileName);
+        fileDTO.setContentType(contentType);
+        fileDTO.setFilePath(filePath.toString());
+        fileDTO.setUploadTimestamp(LocalDateTime.now());
+
+        File fileEntity = mapper.toModel(fileDTO);
+        repository.save(fileEntity);
+
+        return filePath.toString();
     }
 
 
-    @Override
-    protected List<FileDTO> mapMissingValues(List<FileDTO> files) {
-        map(
-                files,
-                FileDTO::getTeacher,
-                FileDTO::setTeacher,
-                facultyFeignClient::getTeacher);
+    public ResponseEntity<byte[]> downloadFile(Long id) throws IOException {
+        File fileEntity = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("File not found with ID: " + id));
 
-        return files;
+        FileDTO fileDTO = mapper.toDTO(fileEntity);
+
+        Path path = Paths.get(fileDTO.getFilePath());
+        byte[] fileContent = Files.readAllBytes(path);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileDTO.getFileName());
+
+        return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
     }
+
 
 
     public List<FileDTO> findByBundleId(Long id) {
@@ -104,12 +119,9 @@ public class FileService  extends ExtendedService<File, FileDTO, Long> {
             throw new NotFoundException("bundle not found");
         }
 
-        List<FileDTO> files =
-                mapper.toDTO(
-                        repository.findByBundleIdAndDeletedFalseOrderByUploadTimestampDesc(id));
-        return files.isEmpty()
-                ? files
-                : this.mapMissingValues(files);
+        return mapper.toDTO(repository.findByBundleIdAndDeletedFalseOrderByUploadTimestampDesc(id));
+
+
     }
 
     public Page<FileDTO> findByBundleId(Long id, Pageable pageable, String search) {
@@ -117,15 +129,9 @@ public class FileService  extends ExtendedService<File, FileDTO, Long> {
             throw new NotFoundException("Bundle not found");
         }
 
-        Page<FileDTO> files =
-                repository
+        return repository
                         .findByBundleIdContaining(id, pageable, "%" + search + "%")
                         .map(mapper::toDTO);
-        return files.getContent().isEmpty()
-                ? files
-                : new PageImpl<>(
-                this.mapMissingValues(files.getContent()),
-                pageable,
-                files.getTotalElements());
+
     }
 }

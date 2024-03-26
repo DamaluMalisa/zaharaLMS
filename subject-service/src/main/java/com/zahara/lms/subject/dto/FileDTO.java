@@ -21,13 +21,11 @@ public class FileDTO extends BaseDTO<Long> {
     @NotBlank(message = "Content type is mandatory")
     private String contentType;
 
-    @NotNull(message = "Data is mandatory")
-    private byte[] data;
+    @NotNull(message = "File path is mandatory")
+    private String filePath;
 
     @NotNull(message = "Upload time is mandatory")
     private LocalDateTime uploadTimestamp;
-
-    private TeacherDTO teacher;
 
     private BundleDTO bundle;
 
