@@ -27,6 +27,10 @@ public class FileDTO extends BaseDTO<Long> {
     @NotNull(message = "Upload time is mandatory")
     private LocalDateTime uploadTimestamp;
 
+    private SubjectDTO subject;
+
+    private TeacherDTO teacher;
+
     private BundleDTO bundle;
 
 

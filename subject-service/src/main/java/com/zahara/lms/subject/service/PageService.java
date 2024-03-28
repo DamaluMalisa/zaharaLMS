@@ -11,6 +11,7 @@ import com.zahara.lms.subject.model.Page;
 import com.zahara.lms.subject.model.Subject;
 import com.zahara.lms.subject.repository.BundleRepository;
 import com.zahara.lms.subject.repository.PageRepository;
+import com.zahara.lms.subject.repository.SubjectRepository;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,17 +28,21 @@ public class PageService  extends ExtendedService<Page, PageDTO, Long> {
     private final PageRepository repository;
     private final PageMapper mapper;
     private final BundleRepository bundleRepository;
+
+    private final SubjectRepository subjectRepository;
     private final FacultyFeignClient facultyFeignClient;
 
     public PageService(
             PageRepository repository,
             PageMapper mapper,
             BundleRepository bundleRepository,
+            SubjectRepository subjectRepository,
             FacultyFeignClient facultyFeignClient) {
         super(repository, mapper);
         this.repository = repository;
         this.mapper = mapper;
         this.bundleRepository = bundleRepository;
+        this.subjectRepository = subjectRepository;
         this.facultyFeignClient = facultyFeignClient;
     }
 
@@ -119,6 +124,36 @@ public class PageService  extends ExtendedService<Page, PageDTO, Long> {
         org.springframework.data.domain.Page<PageDTO> pages =
                 repository
                         .findByBundleIdContaining(id, pageable, "%" + search + "%")
+                        .map(mapper::toDTO);
+        return pages.getContent().isEmpty()
+                ? pages
+                : new PageImpl<>(
+                this.mapMissingValues(pages.getContent()),
+                pageable,
+                pages.getTotalElements());
+    }
+
+    public List<PageDTO> findBySubjectId(Long id) {
+        if (!subjectRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        List<PageDTO> pages =
+                mapper.toDTO(
+                        repository.findBySubjectIdAndDeletedFalseOrderByTimestampDesc(id));
+        return pages.isEmpty()
+                ? pages
+                : this.mapMissingValues(pages);
+    }
+
+    public org.springframework.data.domain.Page<PageDTO> findBySubjectId(Long id, Pageable pageable, String search) {
+        if (!subjectRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        org.springframework.data.domain.Page<PageDTO> pages =
+                repository
+                        .findBySubjectIdContaining(id, pageable, "%" + search + "%")
                         .map(mapper::toDTO);
         return pages.getContent().isEmpty()
                 ? pages

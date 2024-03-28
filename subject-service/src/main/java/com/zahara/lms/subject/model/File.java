@@ -33,6 +33,11 @@ public class File extends BaseEntity<Long> {
     private LocalDateTime uploadTimestamp;
 
     @ManyToOne
+    private Subject subject;
+
+    private Long teacherId;
+
+    @ManyToOne
     private Bundle bundle;
 
 

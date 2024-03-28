@@ -36,4 +36,18 @@ public class AssignmentController
         return new ResponseEntity<>(
                 this.service.findByBundleId(id, pageable, search), HttpStatus.OK);
     }
+
+    @GetMapping("/subject/{id}/all")
+    public ResponseEntity<List<AssignmentDTO>> getBySubjectId(@PathVariable Long id) {
+        return new ResponseEntity<>(this.service.findBySubjectId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/subject/{id}")
+    public ResponseEntity<Page<AssignmentDTO>> getBySubjectId(
+            @PathVariable Long id,
+            Pageable pageable,
+            @RequestParam(defaultValue = "") String search) {
+        return new ResponseEntity<>(
+                this.service.findBySubjectId(id, pageable, search), HttpStatus.OK);
+    }
 }

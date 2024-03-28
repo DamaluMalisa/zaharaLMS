@@ -2,8 +2,10 @@ package com.zahara.lms.subject.mapper;
 
 import com.zahara.lms.shared.mapper.BaseMapper;
 import com.zahara.lms.subject.dto.PageDTO;
+import com.zahara.lms.subject.dto.SubjectDTO;
 import com.zahara.lms.subject.dto.TeacherDTO;
 import com.zahara.lms.subject.model.Page;
+import com.zahara.lms.subject.model.Subject;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

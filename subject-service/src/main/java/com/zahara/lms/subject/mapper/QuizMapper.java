@@ -3,9 +3,11 @@ package com.zahara.lms.subject.mapper;
 import com.zahara.lms.shared.mapper.BaseMapper;
 import com.zahara.lms.subject.dto.QuizDTO;
 import com.zahara.lms.subject.dto.QuizDTO;
+import com.zahara.lms.subject.dto.SubjectDTO;
 import com.zahara.lms.subject.dto.TeacherDTO;
 import com.zahara.lms.subject.model.Quiz;
 import com.zahara.lms.subject.model.Quiz;
+import com.zahara.lms.subject.model.Subject;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,4 +20,5 @@ public interface QuizMapper extends BaseMapper<Quiz, QuizDTO, Long> {
     Quiz toModel(QuizDTO quizDTO);
 
     TeacherDTO teacherDTOFromId(Long id);
+
 }

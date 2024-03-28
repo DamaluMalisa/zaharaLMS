@@ -6,13 +6,16 @@ import com.zahara.lms.subject.model.File;
 import com.zahara.lms.subject.service.FileService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/files")
@@ -37,6 +40,7 @@ public class FileController
         }
     }
 
+
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable("id") Long id) {
         try {
@@ -58,5 +62,19 @@ public class FileController
             @RequestParam(defaultValue = "") String search) {
         return new ResponseEntity<>(
                 this.service.findByBundleId(id, pageable, search), HttpStatus.OK);
+    }
+
+    @GetMapping("/subject/{id}/all")
+    public ResponseEntity<List<FileDTO>> getBySubjectId(@PathVariable Long id) {
+        return new ResponseEntity<>(this.service.findBySubjectId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/subject/{id}")
+    public ResponseEntity<Page<FileDTO>> getBySubjectId(
+            @PathVariable Long id,
+            Pageable pageable,
+            @RequestParam(defaultValue = "") String search) {
+        return new ResponseEntity<>(
+                this.service.findBySubjectId(id, pageable, search), HttpStatus.OK);
     }
 }

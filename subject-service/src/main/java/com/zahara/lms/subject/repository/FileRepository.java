@@ -26,4 +26,13 @@ public interface FileRepository extends BaseRepository<File, Long> {
             Long bundleId, Pageable pageable, String search);
 
     List<File> findByBundleIdAndDeletedFalseOrderByUploadTimestampDesc(Long bundleId);
+
+    @Query(
+            "select x from #{#entityName} x where x.deleted = false and x.subject.id = :subjectId "
+                    + "and (cast(x.id as string) like :search "
+                    + "or x.fileName like :search or x.contentType like :search or x.filePath like :search or cast(x.uploadTimestamp as string) like :search)")
+    Page<File> findBySubjectIdContaining(
+            Long subjectId, Pageable pageable, String search);
+
+    List<File> findBySubjectIdAndDeletedFalseOrderByUploadTimestampDesc(Long subjectId);
 }

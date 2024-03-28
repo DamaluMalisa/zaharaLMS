@@ -28,6 +28,8 @@ public class QuizDTO extends BaseDTO<Long> {
 
     private TeacherDTO teacher;
 
+    private SubjectDTO subject;
+
     private BundleDTO bundle;
 
 

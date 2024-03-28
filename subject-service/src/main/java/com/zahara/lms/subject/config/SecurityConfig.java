@@ -34,8 +34,17 @@ public class SecurityConfig {
                 .antMatchers(
                         HttpMethod.GET,
                         "/subjects/**",
-                        "/subject-materials/**",
-                        "/subject-announcement/**",
+                        "/subject-announcements/**",
+                        "/announcements/**",
+                        "/assignments/**",
+                        "/files/**",
+                        "/pages/**",
+                        "/quizzes/**",
+                        "/quiz-submissions/**",
+                        "/assignment-submissions",
+                        "/quiz-grades/**",
+                        "/assignment-grades/**",
+                        "/bundles/**",
                         "/subject-terms/**").permitAll()
                 .antMatchers(
                         HttpMethod.GET,
@@ -51,12 +60,23 @@ public class SecurityConfig {
                         "/subject-enrollments/subject/*/student-id/all").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
                 .antMatchers(
                         HttpMethod.PATCH,
-                        "/subjects/*/syllabus",
+                        "/subjects/*/descriptions",
                         "/subject-enrollments/*/grade").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
                 .antMatchers(
-                        "/subject-materials/**",
-                        "/subject-announcement/**",
-                        "/subject-terms/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                        HttpMethod.POST,
+                        "/assignment/**",
+                        "/files/**",
+                        "/pages/**",
+                        "/quizzes/**",
+                        "/quiz-grades/**",
+                        "/assignment-grades/**",
+                        "/bundles/**",
+                        "/subject-announcements/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/quiz-submissions/**",
+                        "/assignment-submissions",
+                        "/files/**").hasAuthority(ROLE_STUDENT)
                 .anyRequest().hasAuthority(ROLE_ADMIN)
                 .and()
                 .build();

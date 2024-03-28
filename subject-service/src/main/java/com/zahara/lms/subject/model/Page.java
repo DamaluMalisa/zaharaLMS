@@ -31,7 +31,10 @@ public class Page extends BaseEntity<Long> {
     @Column(nullable = false)
     private Long teacherId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
+    private Subject subject;
+
+    @ManyToOne
     private Bundle bundle;
 
 

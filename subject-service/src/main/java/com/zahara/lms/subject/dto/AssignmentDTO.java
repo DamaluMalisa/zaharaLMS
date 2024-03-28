@@ -29,6 +29,8 @@ public class AssignmentDTO extends BaseDTO<Long> {
 
     private TeacherDTO teacher;
 
+    private SubjectDTO subject;
+
     private BundleDTO bundle;
 
 

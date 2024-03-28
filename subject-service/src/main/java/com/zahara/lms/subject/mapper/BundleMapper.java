@@ -19,8 +19,4 @@ public interface BundleMapper extends BaseMapper<Bundle, BundleDTO, Long> {
 
     TeacherDTO teacherDTOFromId(Long id);
 
-    @Mapping(target = "studyProgram", ignore = true)
-    @Mapping(target = "professor", ignore = true)
-    @Mapping(target = "assistant", ignore = true)
-    SubjectDTO toDTO(Subject subject);
 }

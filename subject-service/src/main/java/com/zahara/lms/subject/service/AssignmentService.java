@@ -11,6 +11,7 @@ import com.zahara.lms.subject.model.Assignment;
 import com.zahara.lms.subject.model.Subject;
 import com.zahara.lms.subject.repository.BundleRepository;
 import com.zahara.lms.subject.repository.AssignmentRepository;
+import com.zahara.lms.subject.repository.SubjectRepository;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,18 +29,21 @@ public class AssignmentService  extends ExtendedService<Assignment, AssignmentDT
     private final AssignmentRepository repository;
     private final AssignmentMapper mapper;
     private final BundleRepository bundleRepository;
+    private final SubjectRepository subjectRepository;
     private final FacultyFeignClient facultyFeignClient;
 
     public AssignmentService(
             AssignmentRepository repository,
             AssignmentMapper mapper,
             BundleRepository bundleRepository,
+            SubjectRepository subjectRepository,
             FacultyFeignClient facultyFeignClient) {
         super(repository, mapper);
         this.repository = repository;
         this.mapper = mapper;
         this.bundleRepository = bundleRepository;
         this.facultyFeignClient = facultyFeignClient;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
@@ -114,6 +118,36 @@ public class AssignmentService  extends ExtendedService<Assignment, AssignmentDT
 
     public Page<AssignmentDTO> findByBundleId(Long id, Pageable pageable, String search) {
         if (!bundleRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        Page<AssignmentDTO> assignments =
+                repository
+                        .findByBundleIdContaining(id, pageable, "%" + search + "%")
+                        .map(mapper::toDTO);
+        return assignments.getContent().isEmpty()
+                ? assignments
+                : new PageImpl<>(
+                this.mapMissingValues(assignments.getContent()),
+                pageable,
+                assignments.getTotalElements());
+    }
+
+    public List<AssignmentDTO> findBySubjectId(Long id) {
+        if (!subjectRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        List<AssignmentDTO> assignments =
+                mapper.toDTO(
+                        repository.findBySubjectIdAndDeletedFalseOrderByTimestampDesc(id));
+        return assignments.isEmpty()
+                ? assignments
+                : this.mapMissingValues(assignments);
+    }
+
+    public Page<AssignmentDTO> findBySubjectId(Long id, Pageable pageable, String search) {
+        if (!subjectRepository.existsById(id)) {
             throw new NotFoundException("Bundle not found");
         }
 

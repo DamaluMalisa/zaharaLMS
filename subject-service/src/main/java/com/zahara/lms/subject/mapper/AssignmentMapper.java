@@ -1,12 +1,10 @@
 package com.zahara.lms.subject.mapper;
 
 import com.zahara.lms.shared.mapper.BaseMapper;
-import com.zahara.lms.subject.dto.AssignmentDTO;
-import com.zahara.lms.subject.dto.AssignmentSubmissionDTO;
-import com.zahara.lms.subject.dto.StudentDTO;
-import com.zahara.lms.subject.dto.TeacherDTO;
+import com.zahara.lms.subject.dto.*;
 import com.zahara.lms.subject.model.Assignment;
 import com.zahara.lms.subject.model.AssignmentSubmission;
+import com.zahara.lms.subject.model.Subject;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -19,4 +17,7 @@ public interface AssignmentMapper extends BaseMapper<Assignment, AssignmentDTO, 
     Assignment toModel(AssignmentDTO assignmentDTO);
 
     TeacherDTO teacherDTOFromId(Long id);
+    @Mapping(source = "professorId", target = "professor")
+    @Mapping(source = "assistantId", target = "assistant")
+    SubjectDTO toDTO(Subject subject);
 }

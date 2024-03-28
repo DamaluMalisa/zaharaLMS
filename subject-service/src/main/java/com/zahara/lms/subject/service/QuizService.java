@@ -11,6 +11,7 @@ import com.zahara.lms.subject.model.Quiz;
 import com.zahara.lms.subject.model.Subject;
 import com.zahara.lms.subject.repository.BundleRepository;
 import com.zahara.lms.subject.repository.QuizRepository;
+import com.zahara.lms.subject.repository.SubjectRepository;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,18 +29,21 @@ public class QuizService  extends ExtendedService<Quiz, QuizDTO, Long> {
     private final QuizRepository repository;
     private final QuizMapper mapper;
     private final BundleRepository bundleRepository;
+    private final SubjectRepository subjectRepository;
     private final FacultyFeignClient facultyFeignClient;
 
     public QuizService(
             QuizRepository repository,
             QuizMapper mapper,
             BundleRepository bundleRepository,
+            SubjectRepository subjectRepository,
             FacultyFeignClient facultyFeignClient) {
         super(repository, mapper);
         this.repository = repository;
         this.mapper = mapper;
         this.bundleRepository = bundleRepository;
         this.facultyFeignClient = facultyFeignClient;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
@@ -127,5 +131,35 @@ public class QuizService  extends ExtendedService<Quiz, QuizDTO, Long> {
                 this.mapMissingValues(quizzes.getContent()),
                 pageable,
                 quizzes.getTotalElements());
+    }
+
+    public List<QuizDTO> findBySubjectId(Long id) {
+        if (!subjectRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        List<QuizDTO> pages =
+                mapper.toDTO(
+                        repository.findBySubjectIdAndDeletedFalseOrderByTimestampDesc(id));
+        return pages.isEmpty()
+                ? pages
+                : this.mapMissingValues(pages);
+    }
+
+    public Page<QuizDTO> findBySubjectId(Long id, Pageable pageable, String search) {
+        if (!subjectRepository.existsById(id)) {
+            throw new NotFoundException("Bundle not found");
+        }
+
+        Page<QuizDTO> pages =
+                repository
+                        .findBySubjectIdContaining(id, pageable, "%" + search + "%")
+                        .map(mapper::toDTO);
+        return pages.getContent().isEmpty()
+                ? pages
+                : new PageImpl<>(
+                this.mapMissingValues(pages.getContent()),
+                pageable,
+                pages.getTotalElements());
     }
 }

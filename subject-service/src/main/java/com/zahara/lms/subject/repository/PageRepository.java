@@ -24,6 +24,15 @@ public interface PageRepository extends BaseRepository<com.zahara.lms.subject.mo
     Page<com.zahara.lms.subject.model.Page> findByBundleIdContaining(
             Long bundleId, Pageable pageable, String search);
 
+    @Query(
+            "select x from #{#entityName} x where x.deleted = false and x.subject.id = :subjectId "
+                    + "and (cast(x.id as string) like :search "
+                    + "or x.title like :search or x.content like :search or cast(x.timestamp as string) like :search)")
+    Page<com.zahara.lms.subject.model.Page> findBySubjectIdContaining(
+            Long subjectId, Pageable pageable, String search);
+
     List<com.zahara.lms.subject.model.Page> findByBundleIdAndDeletedFalseOrderByTimestampDesc(Long bundleId);
+
+    List<com.zahara.lms.subject.model.Page> findBySubjectIdAndDeletedFalseOrderByTimestampDesc(Long subjectId);
 }
 
